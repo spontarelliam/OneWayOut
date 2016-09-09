@@ -14,7 +14,7 @@ def press_stop():
     for i in range(3):
         os.system("irsend SEND_ONCE /home/pi/lircd.conf KEY_STOP")
         time.sleep(0.1)
-        
+
     mp3_file = glob.glob("*.mp3")[0]
     if mp3_file is not None:
         play_mp3("/home/pi/OneWayOut/"+mp3_file)
@@ -22,13 +22,12 @@ def press_stop():
         print("Error: *.mp3 file not found.")
         return
 
-    
+
 def play_mp3(path):
     print("Playing: " + path)
-    subprocess.Popen(['mpg123', '-q', path]).wait()
-    print("Done playing")
+    subprocess.Popen(['mpg123', '-q', path])
     main()
-    
+
 
 def main():
     GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -39,6 +38,6 @@ def main():
     except KeyboardInterrupt:
         GPIO.cleanup()       # clean up GPIO on CTRL+C exit
     GPIO.cleanup()           # clean up GPIO on normal exit
-        
+
 if __name__ == '__main__':
     main()
