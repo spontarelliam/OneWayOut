@@ -26,18 +26,24 @@ def press_stop():
 def play_mp3(path):
     print("Playing: " + path)
     subprocess.Popen(['mpg123', '-q', path]).wait()
-    main()
 
 
 def main():
     # GPIO.setup(14, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(14, GPIO.IN)
-    try:
-        GPIO.wait_for_edge(14, GPIO.FALLING)
-        print("Button Pressed")
-        press_stop()
-    except KeyboardInterrupt:
-        GPIO.cleanup()       # clean up GPIO on CTRL+C exit
+
+    while True:
+        try:
+            GPIO.wait_for_edge(14, GPIO.FALLING)
+            time.sleep(0.01)         # need to filter out the false positive of some power fluctuation
+            if GPIO.input(14) != GPIO.LOW:
+                print("false positive")
+                continue
+            print("Button Pressed")
+            press_stop()
+        except KeyboardInterrupt:
+            GPIO.cleanup()       # clean up GPIO on CTRL+C exit
+
     GPIO.cleanup()           # clean up GPIO on normal exit
 
 if __name__ == '__main__':
